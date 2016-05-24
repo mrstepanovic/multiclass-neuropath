@@ -1,51 +1,48 @@
-%%%% Given an a and a mask of the region of interest (whatever.label), 
-%%%% this script return just the parcellations that are INSIDE the mask. 
-%%%% Each parcellation will be saved as a .label file.
-%%%% mirs_label2annot needed to transform those labels into an annot file.
-%%%% INPUTS:
-%%%%       - subjectName: Subject that contains the label file. E.g
-%%%%       fsaverage.
-%%%%       - maskLabelName: Name of the label (w/out the ".label").
-%%%%       - parcellationAnnot: Annotation file name. E.g 123test.annot
-%%%%
-%%%% NOTE> (1) Set the SUBJECTS_DIR BEFORE OPENING matlab.
-%%%%       (2) cd to path where the annot is, before running function.
-%%%%       (3) Labels MUST be inside the subject (e.g inside fsverage/labels/) !
-%%%%       (4) Vertices values change depending on subjects surface. Thus,
-%%%%       both label and annotation files MUST be done on the same subject
-%%%%       surface.
+%% microparcellation_masked.m
+%
+%% Given a surface and a mask of the region of interest (whatever.label), 
+%% this script returns only the parcellations that are INSIDE the mask. 
+%% Each parcellation will be saved as a .label file (there will be many).
+%% mirs_label2annot needed to transform those labels into an annot file.
+%%
+%% INPUTS:
+%%       'subjectName': contains the label file. e.g 'fsaverage'
+%%       'maskLabelName': name of the ROI mask (without '.label' suffix).
+%%       'parcellationAnnot': annotation file name, e.g temporal-pole.annot
+%%
+%% NOTES (1) Set freesurfer $SUBJECTS_DIR before running
+%%       (2) cd to 'parcellationAnnot' parent dir before running function
+%%       (3) labels MUST be inside subject dir (e.g inside 'fsaverage/label/')
+%%       (4) vertex values vary between subjects; label and annotation 
+%%	         files MUST represent the same subject
+%%
+%%	Credit to V. M. Blancafort, 2015
 
+function [ prova ] = microparcellation_masked(subjectName, hemisphere, maskLabelName, parcellationAnnotname)
 
-
-function [prova ] = microparcellation_masked(subjectName,maskLabelName, parcellationAnnotname)
-
-% Load Label (vertex, MNI coordinates, Values)
+% Load label (vertices, MNI coordinates, values)
 label = read_label(subjectName,maskLabelName);
-% Load Annot file(annotVertex = vertex#, vertexValues = value for each
-% vertex)
+
+% Load annot file (annotVertex = vertex #, vertexValues = value for each vertex)
 [annotVertex, vertexValues, annotSpec] = read_annotation(parcellationAnnotname);
-hemi = 'lh';
+hemi = hemisphere;
 
-
-%Check min area of parcellations
+% Check min area of parcellations
 clustersvalue = unique(vertexValues);
-parcareas = zeros(1,length(clustersvalue));
+parc_areas = zeros(1,length(clustersvalue));
 for idx1 = 1:length(clustersvalue)
-    % #of vertices w/ the same value. Used as area.
-    parcareas(idx1) = sum(vertexValues == clustersvalue(idx1));
-
+    % number of vertices w/ the same value. Used as area.
+    parc_areas(idx1) = sum(vertexValues == clustersvalue(idx1));
 end
-minarea = min(parcareas)*0.7;
 
+minarea = min(parc_areas)*0.7;
 
-%First filter. Mask w/ vertex values. Summ 1 in label b/c vertex start w/ 0 and
-%Matlab indices w/ 1
+% First filter. Mask w/ vertex values. Summ 1 in label b/c vertex start w/ 0 and
+% Matlab indices w/ 1
 nParcvertex = label(:,1);
 nParcvalues = vertexValues(label(:,1) + 1);
 
-
-%Second filter. Just parcellations w/ area = max area inside the mask,
-%survive
+% Second filter. Just parcellations w/ area = max area inside the mask survive
 nclustervalues = unique(nParcvalues);
 numLabel = 1;
 for idx2=1:length(nclustervalues)
@@ -68,15 +65,12 @@ for idx3=1:length(allLabels)
         flvals(idx4) = label(pos,5);
     end
     
-    
     kk = write_label(flindx,flxyz,flvals,flname,subjectName);
     
     if kk == 0
         fprintf('Error writting the lables!!');
         return;
     end  
-
-
 end
 
 prova = 1;
