@@ -1,4 +1,4 @@
-# multiclass_neuropath
+# multiclass-neuropath
 
 ## About
 Healthy elderly cortex appears quite different from tissue affected by frontotemporal dementia (FTD) and Alzheimer's Disease (AD). But how can these visually-striking large-scale patterns of brain atrophy be classified quantitatively into pathological diagnoses?
