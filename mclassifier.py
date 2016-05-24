@@ -2,9 +2,9 @@
 # pulled from stackoverflow -- barebone skeleton and will prob need lots of work
 
 import numpy as np
-from raw_etl import get_example, build_training_set
+import raw_etl 
 
-example = get_example('data/lh_thickness.csv')
+example = raw_etl.get_example('data/p121_data.csv')
 
 print(example)
 

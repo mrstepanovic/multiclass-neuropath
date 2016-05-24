@@ -1,4 +1,5 @@
 # functions for use with mclassifier.py
+import numpy as np
 
 def get_example(fname): # extracts example data (parcellation-wise thickness values) as np row vector
 	raw_data = np.genfromtxt(fname, autostrip=True)
