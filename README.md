@@ -8,6 +8,6 @@ This project aims to use machine learning towards this end. More specificially, 
 ## Steps
 1. Reconstruct left and right hemisphere cortical surfaces with freesurfer's recon-all: http://bit.ly/1sz6dW3
 2. Transform to common atlas space (i.e. "fsaverage") and compute standard score for each vertex, computed between hemispheres (globally)
-3. Parcellate each hemisphere using (A) functional atlas topography (Desikan, 2006) or (B) isometric hexagon tesselation ("soccer ball") -- the preferred method is still TBD
+3. Parcellate each hemisphere using (A) functional atlas topography (Desikan, 2006) or (B) isometric hexagon tesselation ("soccer ball"; mris_make_face_parcellation fsaverage/surf/lh.sphere.reg $FREESURFER_HOME/lib/bem/ic2.tri ./?h.microparc.annot) -- the preferred method is still TBD
 4. Each parcel represents a feature in training set X, parameterized by theta. Features undergo regularization with a lambda value TBD. Training set targets are represented in target vector y as such { 1:'healthy', 2:'FTD', 3:'AD' }
 5. ...
